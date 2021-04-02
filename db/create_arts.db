@@ -1,0 +1,91 @@
+CREATE TABLE pays (
+indicateur_national       varchar(2) primary key,
+nom                       varchar(80)
+);
+
+CREATE TABLE musee (
+nom                       varchar(80) primary key,
+adresse                   varchar(80),
+prix_entree               real,
+pays                      varchar(2) references pays(indicateur_national)
+);
+
+CREATE TYPE type_don AS ENUM ('mensuel', 'ponctuel');
+
+CREATE TABLE mecene (
+mecene_id                 SERIAL primary key,
+patronyme                 varchar(80),
+don_mensuel               real
+);
+
+CREATE TABLE don (
+don_id                    SERIAL primary key,
+date                      date,
+valeur                    real,
+type                      type_don,
+musee                     varchar(80) references musee(nom)
+mecene                    integer references mecene(mecene_id)
+);
+
+CREATE TYPE type_oeuvre AS ENUM ('peinture', 'sculpture', 'photographie');
+
+CREATE TABLE exposition (
+expo_id                   SERIAL primary key,
+nom                       varchar(80),
+musee                     varchar(80) references musee(nom)
+);
+
+CREATE TABLE artiste (
+artiste_id                SERIAL primary key,
+nom                       varchar(80),
+date_naissance            date,
+date_mort                 date,
+nationalite               varchar(2) references pays(indicateur_national)
+biographie                varchar(1000)
+);
+
+CREATE TABLE courant_artistique (
+nom                       varchar(80) primary key,
+date_debut                date,
+date_fin                  date,
+description               varchar(1000)
+);
+
+CREATE TABLE participation_courant(
+nom_courant               varchar(80) references courant_artistique(nom),
+artiste                   integer references artiste(artiste_id)
+);
+
+CREATE TABLE exposition_permanente (
+); INHERITS (exposition)
+
+CREATE TABLE exposition_temporaire (
+date_debut                date,
+date_fin                  date
+); INHERITS (exposition)
+
+CREATE TABLE exposition_temporaire_pays (
+pays                      varchar(2) references pays(nom)
+); INHERITS (exposition_temporaire)
+
+CREATE TABLE exposition_temporaire_artiste (
+artiste                   integer references artiste(artiste_id)
+); INHERITS (exposition_temporaire)
+
+CREATE TABLE exposition_temporaire_courant (
+courant_artistique        varchar references courant_artistique(nom)
+); INHERITS (exposition_temporaire)
+
+CREATE TABLE oeuvre (
+nom                       varchar(80) primary key,
+date                      date,
+description               varchar(1000),
+type                      type_oeuvre,
+musee                     varchar(80) references musee(nom),
+exposition                integer references exposition(expo_id)
+artiste                   integer references artiste(artiste_id)
+courant_artistique        varchar references courant_artistique(nom)
+);
+
+-- ajouter la présentation d'exposition
+

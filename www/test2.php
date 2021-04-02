@@ -2,14 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Main page</title>
+    <title>HTML is processed</title>
   </head>
   <body>
-    
-    <a href="login.php">Log in</a>
-
+    <p>The page</p>
     <?php echo "PHP is processed as well" ?>
-    <?php echo phpinfo() ?>
     <ul>
       <?php
       for($i = 0; $i < 10; $i++) {
