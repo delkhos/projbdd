@@ -35,7 +35,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Validate credentials
     if(empty($username_err) && empty($password_err)){
         // Prepare a select statement
-        $sql = "SELECT id, username, password FROM users WHERE username = :username";
+        $sql = "SELECT * FROM users WHERE username = :username";
         
         if($stmt = $pdo->prepare($sql)){
             // Bind variables to the prepared statement as parameters
@@ -60,9 +60,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             $_SESSION["loggedin"] = true;
                             $_SESSION["id"] = $id;
                             $_SESSION["username"] = $username;                            
-                            $_SESSION["isAdmin"] = $row["admin"]== "true" ? true : false ;           
+                            $_SESSION["isAdmin"] = $row["admin"];           
                             $_SESSION["handeldMuseum"] = $row["handeld_musee"];                            
-                            
                             // Redirect user to welcome page
                             header("location: index.php");
                         } else{
