@@ -17,6 +17,7 @@ username                  VARCHAR(50) NOT NULL UNIQUE,
 password                  VARCHAR(255) NOT NULL,
 admin                     BOOLEAN DEFAULT FALSE,
 handeld_musee             varchar(250) references Musee(nom_musee),
+don_mensuel               real DEFAULT 0,
 created_at                date DEFAULT CURRENT_DATE
 );
 
