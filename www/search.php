@@ -90,8 +90,8 @@ require_once "config.php";
                 //$content = file_get_contents('http://loripsum.net/api');
                 //echo $content;
         $stmt = $pdo->prepare("
-        SELECT DISTINCT * FROM oeuvre a
-        join expositions_sans_musee b ON  a.exposition = b.expo_id
+        SELECT DISTINCT * FROM Oeuvre a
+        join Exposition_sans_musee b ON  a.exposition = b.expo_id
         WHERE nom_oeuvre LIKE :search1 OR 
         SIMILARITY(nom_oeuvre,:search2) > 0.4 OR
         artiste LIKE :search1 OR 
@@ -144,8 +144,8 @@ require_once "config.php";
                 //$content = file_get_contents('http://loripsum.net/api');
                 //echo $content;
         $stmt = $pdo->prepare("
-        SELECT DISTINCT * FROM artiste a
-        JOIN participation_courant b ON b.artiste = a.nom_artiste
+        SELECT DISTINCT * FROM Artiste a
+        JOIN Participation_courant b ON b.artiste = a.nom_artiste
         WHERE nom_artiste LIKE :search1 OR 
         SIMILARITY(nom_artiste,:search2) > 0.4 OR
         nationalite LIKE :search1 OR 
@@ -191,7 +191,7 @@ require_once "config.php";
                 //$content = file_get_contents('http://loripsum.net/api');
                 //echo $content;
         $stmt = $pdo->prepare("
-        SELECT DISTINCT * FROM musee
+        SELECT DISTINCT * FROM Musee
         WHERE nom_musee LIKE :search1 OR 
         SIMILARITY(nom_musee,:search2) > 0.4 OR
         pays LIKE :search1 OR 
@@ -251,7 +251,7 @@ require_once "config.php";
                     //$content = file_get_contents('http://loripsum.net/api');
                     //echo $content;
             $stmt = $pdo->prepare("
-            SELECT DISTINCT * FROM exposition_permanente
+            SELECT DISTINCT * FROM Exposition_permanente
             WHERE nom_expo LIKE :search1 OR 
             SIMILARITY(nom_expo,:search2) > 0.4 OR
             musee LIKE :search1 OR 
@@ -293,7 +293,7 @@ require_once "config.php";
                     //$content = file_get_contents('http://loripsum.net/api');
                     //echo $content;
             $stmt = $pdo->prepare("
-            SELECT DISTINCT * FROM exposition_temporaire_artiste
+            SELECT DISTINCT * FROM Exposition_temporaire_artiste
             WHERE nom_expo LIKE :search1 OR 
             SIMILARITY(nom_expo,:search2) > 0.4 OR
             musee LIKE :search1 OR 
@@ -340,7 +340,7 @@ require_once "config.php";
                     //$content = file_get_contents('http://loripsum.net/api');
                     //echo $content;
             $stmt = $pdo->prepare("
-            SELECT DISTINCT * FROM exposition_temporaire_pays
+            SELECT DISTINCT * FROM Exposition_temporaire_pays
             WHERE nom_expo LIKE :search1 OR 
             SIMILARITY(nom_expo,:search2) > 0.4 OR
             musee LIKE :search1 OR 
@@ -387,7 +387,7 @@ require_once "config.php";
                     //$content = file_get_contents('http://loripsum.net/api');
                     //echo $content;
             $stmt = $pdo->prepare("
-            SELECT DISTINCT * FROM exposition_temporaire_courant
+            SELECT DISTINCT * FROM Exposition_temporaire_courant
             WHERE nom_expo LIKE :search1 OR 
             SIMILARITY(nom_expo,:search2) > 0.4 OR
             musee LIKE :search1 OR 
@@ -436,7 +436,7 @@ require_once "config.php";
                 //$content = file_get_contents('http://loripsum.net/api');
                 //echo $content;
         $stmt = $pdo->prepare("
-        SELECT DISTINCT * FROM courant_artistique
+        SELECT DISTINCT * FROM Courant_artistique
         WHERE nom_courant LIKE :search1 OR 
         SIMILARITY(nom_courant,:search2) > 0.4
         ");

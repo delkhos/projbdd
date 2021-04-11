@@ -1,105 +1,132 @@
-CREATE TABLE pays (
-indicateur_national       varchar(2) NOT NULL primary key,
-nom                       varchar(80) NOT NULL 
+CREATE EXTENSION pg_trgm;
+
+CREATE TABLE Pays (
+nom_pays                  varchar(250) UNIQUE PRIMARY KEY
 );
 
-CREATE TABLE musee (
-nom                       varchar(80) NOT NULL primary key,
-adresse                   varchar(80) NOT NULL ,
+CREATE TABLE Musee (
+nom_musee                 varchar(250) UNIQUE primary key,
+adresse                   varchar(250) NOT NULL,
 prix_entree               real,
-pays                      varchar(2) references pays(indicateur_national) NOT NULL 
+pays                      varchar(250) references Pays(nom_pays) NOT NULL
+);
+
+CREATE TABLE User (
+id                        SERIAL PRIMARY KEY,
+username                  VARCHAR(50) NOT NULL UNIQUE,
+password                  VARCHAR(255) NOT NULL,
+admin                     BOOLEAN DEFAULT FALSE,
+handeld_musee             varchar(250) references Musee(nom_musee),
+don_mensuel               real DEFAULT 0,
+created_at                date DEFAULT CURRENT_DATE
 );
 
 CREATE TYPE type_don AS ENUM ('mensuel', 'ponctuel');
 
-CREATE TABLE mecene (
-mecene_id                 SERIAL NOT NULL primary key,
-patronyme                 varchar(80)
-);
-
-CREATE TABLE don (
-don_id                    SERIAL NOT NULL primary key,
-date                      date NOT NULL ,
-valeur                    real NOT NULL ,
-type                      type_don NOT NULL ,
-musee                     varchar(80) references musee(nom) NOT NULL, 
-mecene                    integer references mecene(mecene_id) NOT NULL 
+CREATE TABLE Don (
+don_id                    SERIAL primary key,
+date                      date DEFAULT CURRENT_DATE NOT NULL,
+valeur                    real NOT NULL,
+type                      type_don NOT NULL,
+musee                     varchar(250) references Musee(nom_musee) NOT NULL,
+mecene                    integer references Users(id)  NOT NULL
 );
 
 CREATE TYPE type_oeuvre AS ENUM ('peinture', 'sculpture', 'photographie');
 
-CREATE TABLE exposition (
-expo_id                   SERIAL NOT NULL primary key,
-nom                       varchar(80) NOT NULL ,
-description               varchar(1000)
-);
 
-CREATE TABLE presente_musee_expo (
-exposition                integer references exposition(expo_id) NOT NULL,
-musee                     varchar(80) references musee(nom) NOT NULL
-);
-
-CREATE TABLE artiste (
-artiste_id                SERIAL NOT NULL primary key,
-nom                       varchar(80) NOT NULL ,
-date_naissance            date NOT NULL ,
+CREATE TABLE Artiste (
+nom_artiste               varchar(250) primary key  NOT NULL,
+date_naissance            date  NOT NULL,
 date_mort                 date,
-nationalite               varchar(2) references pays(indicateur_national),
+nationalite               varchar(250) references Pays(nom_pays),
 biographie                varchar(1000)
 );
 
-CREATE TABLE courant_artistique (
-nom                       varchar(80) NOT NULL primary key,
-date_debut                date NOT NULL ,
-date_fin                  date,
-description               varchar(1000),
-pays_apparition           varchar(2) references pays(indicateur_national)
+CREATE TABLE Courant_artistique (
+nom_courant               varchar(250) UNIQUE primary key,
+date_debut                integer NOT NULL,
+date_fin                  integer,
+description               varchar(1000)
 );
 
-CREATE TABLE participation_courant(
-nom_courant               varchar(80) references courant_artistique(nom) NOT NULL ,
-artiste                   integer references artiste(artiste_id) NOT NULL 
+CREATE TABLE Participation_courant(
+nom_courant               varchar(250) references Courant_artistique(nom_courant) NOT NULL,
+artiste                   varchar(250) references Artiste(nom_artiste) NOT NULL
 );
 
-CREATE TABLE exposition_permanente (
-) INHERITS (exposition);
+CREATE TYPE type_expo AS ENUM('perm','tempop','tempoc','tempoa');
 
-CREATE TABLE exposition_temporaire (
-date_debut                date NOT NULL ,
-date_fin                  date NOT NULL ,
-musee_organisateur        varchar(80) references musee(nom) NOT NULL, 
-prix_additionnel          real
-) INHERITS (exposition);
-
-CREATE TABLE exposition_temporaire_pays (
-pays                      varchar(2) references pays(indicateur_national) NOT NULL 
-) INHERITS (exposition_temporaire);
-
-CREATE TABLE exposition_temporaire_artiste (
-artiste                   integer references artiste(artiste_id) NOT NULL 
-) INHERITS (exposition_temporaire);
-
-CREATE TABLE exposition_temporaire_courant (
-courant_artistique        varchar references courant_artistique(nom) NOT NULL 
-) INHERITS (exposition_temporaire);
-
-CREATE TABLE oeuvre (
-nom                       varchar(80) NOT NULL primary key,
-date_creation             date,
-description               varchar(1000),
-type                      type_oeuvre NOT NULL ,
-musee_propriétaire        varchar(80) references musee(nom) NOT NULL ,
-artiste                   integer references artiste(artiste_id),
-courant_artistique        varchar references courant_artistique(nom)
+CREATE TABLE Expo_id (
+expo_id                   SERIAL PRIMARY KEY,
+expo_type                 type_expo NOT NULL
 );
 
-CREATE TABLE presente_expo_oeuvre (
-oeuvre                    varchar(80) references oeuvre(nom) NOT NULL ,
-exposition                integer references exposition(expo_id) NOT NULL 
+CREATE TABLE Exposition_permanente(
+expo_id                   integer unique primary key references Expo_id(expo_id),
+nom_expo                  varchar(250),
+musee                     varchar(250) references Musee(nom_musee)
+);
+
+CREATE TABLE Exposition_temporaire_pays (
+expo_id                   integer unique primary key references Expo_id(expo_id),
+nom_expo                  varchar(250) NOT NULL,  
+musee                     varchar(250) references Musee(nom_musee) NOT NULL,
+date_debut                date NOT NULL,
+date_fin                  date NOT NULL,
+pays                      varchar(250) references Pays(nom_pays) NOT NULL
 );
 
 
+CREATE TABLE Exposition_temporaire_artiste (
+expo_id                   integer unique primary key references Expo_id(expo_id),
+nom_expo                  varchar(250) NOT NULL,
+musee                     varchar(250) references Musee(nom_musee) NOT NULL,
+date_debut                date NOT NULL,
+date_fin                  date NOT NULL,
+artiste                   varchar(250) references Artiste(nom_artiste) NOT NULL
+);
 
+CREATE TABLE Exposition_temporaire_courant (
+expo_id                   integer unique primary key references Expo_id(expo_id),
+nom_expo                  varchar(250) NOT NULL,
+musee                     varchar(250) references Musee(nom_musee) NOT NULL,
+date_debut                date NOT NULL,
+date_fin                  date NOT NULL,
+courant       varchar(250) references Courant_artistique(nom_courant) NOT NULL
+);
 
--- ajouter la présentation d'exposition
+CREATE VIEW Exposition AS
+  SELECT expo_id, nom_expo, musee FROM Exposition_permanente
+    UNION
+  SELECT expo_id, nom_expo, musee FROM Exposition_temporaire_artiste 
+UNION
+SELECT expo_id, nom_expo, musee FROM Exposition_temporaire_pays 
+UNION
+SELECT expo_id, nom_expo, musee FROM Exposition_temporaire_courant;
 
+CREATE VIEW Exposition_sans_musee AS
+  SELECT expo_id, nom_expo FROM Exposition_permanente
+    UNION
+  SELECT expo_id, nom_expo FROM Exposition_temporaire_artiste 
+UNION
+SELECT expo_id, nom_expo FROM Exposition_temporaire_pays 
+UNION
+SELECT expo_id, nom_expo FROM Exposition_temporaire_courant;
+
+CREATE TABLE Participation_expo(
+expo                      integer references Expo_id(expo_id),
+musee                     varchar(250) references Musee(nom_musee)
+);
+
+CREATE TABLE Oeuvre (
+oeuvre_id                 SERIAL primary key,
+nom_oeuvre                varchar(250) NOT NULL,
+date                      integer,
+description               varchar(5000),
+type                      type_oeuvre NOT NULL,
+musee                     varchar(250) references Musee(nom_musee),
+exposition                integer references Expo_id(expo_id),
+artiste                   varchar(250) references Artiste(nom_artiste),
+courant_artistique        varchar references Courant_artistique(nom_courant)
+);

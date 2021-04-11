@@ -34,7 +34,11 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
           <a class="nav-item nav-link " href="logout.php">Sign out</a>
           <a class="nav-item nav-link " href="advanced-search.php">Advanced Search</a>
         <?php
-          if(!isset($_SESSION["isAdmin"]) || $_SESSION["isAdmin"] === true){
+          if(isset($_SESSION["isAdmin"]) && $_SESSION["isAdmin"] === true){
+          echo '<a class="nav-item nav-link " href="adminpanel.php">Admin Panel</a>';
+          }
+          if(isset($_SESSION["handeldMuseum"]) && strlen($_SESSION["handeldMuseum"]) > 0){
+          echo '<a class="nav-item nav-link " href="adminpanel.php">Museum Management</a>';
           }
         ?>
         </div>
