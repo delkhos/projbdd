@@ -61,7 +61,7 @@ expo_type                 type_expo NOT NULL
 CREATE TABLE Exposition_permanente(
 expo_id                   integer unique primary key references Expo_id(expo_id),
 nom_expo                  varchar(250),
-musee                     varchar(250) references Musee(nom_musee) NOT NULL,
+musee                     varchar(250) references Musee(nom_musee) NOT NULL
 );
 
 CREATE TABLE Exposition_temporaire_pays (
