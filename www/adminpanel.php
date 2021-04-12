@@ -172,7 +172,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
           <a class="nav-item nav-link " href="index.php">Home</a>
           <a class="nav-item nav-link " href="reset-password.php">Reset your password</a>
           <a class="nav-item nav-link " href="logout.php">Sign out</a>
+          <!--
           <a class="nav-item nav-link " href="advanced-search.php">Advanced Search</a>
+          -->
         <?php
           if(isset($_SESSION["isAdmin"]) && $_SESSION["isAdmin"] === true){
           echo '<a class="nav-item nav-link " href="adminpanel.php">Admin Panel</a>';
