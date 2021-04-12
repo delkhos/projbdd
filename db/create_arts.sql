@@ -11,23 +11,19 @@ prix_entree               real,
 pays                      varchar(250) references Pays(nom_pays) NOT NULL
 );
 
-CREATE TABLE User (
+CREATE TABLE Users (
 id                        SERIAL PRIMARY KEY,
 username                  VARCHAR(50) NOT NULL UNIQUE,
 password                  VARCHAR(255) NOT NULL,
 admin                     BOOLEAN DEFAULT FALSE,
 handeld_musee             varchar(250) references Musee(nom_musee),
-don_mensuel               real DEFAULT 0,
 created_at                date DEFAULT CURRENT_DATE
 );
-
-CREATE TYPE type_don AS ENUM ('mensuel', 'ponctuel');
 
 CREATE TABLE Don (
 don_id                    SERIAL primary key,
 date                      date DEFAULT CURRENT_DATE NOT NULL,
 valeur                    real NOT NULL,
-type                      type_don NOT NULL,
 musee                     varchar(250) references Musee(nom_musee) NOT NULL,
 mecene                    integer references Users(id)  NOT NULL
 );
@@ -65,7 +61,7 @@ expo_type                 type_expo NOT NULL
 CREATE TABLE Exposition_permanente(
 expo_id                   integer unique primary key references Expo_id(expo_id),
 nom_expo                  varchar(250),
-musee                     varchar(250) references Musee(nom_musee)
+musee                     varchar(250) references Musee(nom_musee) NOT NULL,
 );
 
 CREATE TABLE Exposition_temporaire_pays (

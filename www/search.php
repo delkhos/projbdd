@@ -40,6 +40,14 @@ require_once "config.php";
           <a class="nav-item nav-link " href="reset-password.php">Reset your password</a>
           <a class="nav-item nav-link " href="logout.php">Sign out</a>
           <a class="nav-item nav-link " href="advanced-search.php">Advanced Search</a>
+        <?php
+          if(isset($_SESSION["isAdmin"]) && $_SESSION["isAdmin"] === true){
+          echo '<a class="nav-item nav-link " href="adminpanel.php">Admin Panel</a>';
+          }
+          if(isset($_SESSION["handeldMuseum"]) && strlen($_SESSION["handeldMuseum"]) > 0){
+          echo '<a class="nav-item nav-link " href="management.php">Museum Management</a>';
+          }
+        ?>
         </div>
       </div>
       <form class="form-inline" method="post" action="search.php">
@@ -74,7 +82,7 @@ require_once "config.php";
           <table class="table">
             <thead class="thead-dark">
               <tr>
-                <th scope="col">#</th>
+                <th scope="col">Id</th>
                 <th scope="col">Name</th>
                 <th scope="col">Date</th>
                 <th scope="col">Type</th>
@@ -106,11 +114,9 @@ require_once "config.php";
         $stmt->bindParam(":search2", $search_query, PDO::PARAM_STR);
         $stmt->execute(); 
         $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $iterator = 0;
         foreach ($data as $row) {
-            $iterator += 1;
             echo  '<tr>
-                    <th scope="row">'. $iterator .'</th>
+                    <th scope="row">'. $row['oeuvre_id']  .'</th>
                     <td>'.  $row['nom_oeuvre'] .'</td>
                     <td>'.  $row['date'] .'</td>
                     <td>'.  $row['type'] .'</td>
@@ -131,7 +137,6 @@ require_once "config.php";
           <table class="table">
             <thead class="thead-dark">
               <tr>
-                <th scope="col">#</th>
                 <th scope="col">Name</th>
                 <th scope="col">Date of birth</th>
                 <th scope="col">Date of death</th>
@@ -158,12 +163,9 @@ require_once "config.php";
         $stmt->bindParam(":search2", $search_query, PDO::PARAM_STR);
         $stmt->execute(); 
         $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $iterator = 0;
         foreach ($data as $row) {
-            $iterator += 1;
             echo  '<tr>
-                    <th scope="row">'. $iterator .'</th>
-                    <td>'.  $row['nom_artiste'] .'</td>
+                    <th scope="row">'.  $row['nom_artiste'] .'</th>
                     <td>'.  $row['date_naissance'] .'</td>
                     <td>'.  $row['date_mort'] .'</td>
                     <td>'.  $row['nationalite'] .'</td>
@@ -179,7 +181,6 @@ require_once "config.php";
           <table class="table">
             <thead class="thead-dark">
               <tr>
-                <th scope="col">#</th>
                 <th scope="col">Name</th>
                 <th scope="col">Address</th>
                 <th scope="col">Entrance fee</th>
@@ -202,12 +203,9 @@ require_once "config.php";
         $stmt->bindParam(":search2", $search_query, PDO::PARAM_STR);
         $stmt->execute(); 
         $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $iterator = 0;
         foreach ($data as $row) {
-            $iterator += 1;
             echo  '<tr>
-                    <th scope="row">'. $iterator .'</th>
-                    <td>'.  $row['nom_musee'] .'</td>
+                    <th scope="row">'.  $row['nom_musee'] .'</th>
                     <td>'.  $row['adresse'] .'</td>
                     <td>'.  $row['prix_entree'] .'</td>
                     <td>'.  $row['pays'] .'</td>
@@ -241,7 +239,7 @@ require_once "config.php";
               <table class="table">
                 <thead class="thead-dark">
                   <tr>
-                    <th scope="col">#</th>
+                    <th scope="col">Id</th>
                     <th scope="col">Name</th>
                     <th scope="col">Museum</th>
                   </tr>
@@ -262,11 +260,9 @@ require_once "config.php";
             $stmt->bindParam(":search2", $search_query, PDO::PARAM_STR);
             $stmt->execute(); 
             $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $iterator = 0;
             foreach ($data as $row) {
-                $iterator += 1;
                 echo  '<tr>
-                        <th scope="row">'. $iterator .'</th>
+                        <th scope="row">'. $row['expo_id'] .'</th>
                         <td>'.  $row['nom_expo'] .'</td>
                         <td>'.  $row['musee'] .'</td>
                       </tr>'
@@ -280,7 +276,7 @@ require_once "config.php";
               <table class="table">
                 <thead class="thead-dark">
                   <tr>
-                    <th scope="col">#</th>
+                    <th scope="col">Id</th>
                     <th scope="col">Name</th>
                     <th scope="col">Museum</th>
                     <th scope="col">Start date</th>
@@ -310,7 +306,7 @@ require_once "config.php";
             foreach ($data as $row) {
                 $iterator += 1;
                 echo  '<tr>
-                        <th scope="row">'. $iterator .'</th>
+                        <th scope="row">'. $row['expo_id'] .'</th>
                         <td>'.  $row['nom_expo'] .'</td>
                         <td>'.  $row['musee'] .'</td>
                         <td>'.  $row['date_debut'] .'</td>
@@ -327,7 +323,7 @@ require_once "config.php";
               <table class="table">
                 <thead class="thead-dark">
                   <tr>
-                    <th scope="col">#</th>
+                    <th scope="col">Id</th>
                     <th scope="col">Name</th>
                     <th scope="col">Museum</th>
                     <th scope="col">Start date</th>
@@ -357,7 +353,7 @@ require_once "config.php";
             foreach ($data as $row) {
                 $iterator += 1;
                 echo  '<tr>
-                        <th scope="row">'. $iterator .'</th>
+                        <th scope="row">'. $row['expo_id'] .'</th>
                         <td>'.  $row['nom_expo'] .'</td>
                         <td>'.  $row['musee'] .'</td>
                         <td>'.  $row['date_debut'] .'</td>
@@ -374,7 +370,7 @@ require_once "config.php";
               <table class="table">
                 <thead class="thead-dark">
                   <tr>
-                    <th scope="col">#</th>
+                    <th scope="col">Id</th>
                     <th scope="col">Name</th>
                     <th scope="col">Museum</th>
                     <th scope="col">Start date</th>
@@ -404,7 +400,7 @@ require_once "config.php";
             foreach ($data as $row) {
                 $iterator += 1;
                 echo  '<tr>
-                        <th scope="row">'. $iterator .'</th>
+                        <th scope="row">'. $row['expo_id'] .'</th>
                         <td>'.  $row['nom_expo'] .'</td>
                         <td>'.  $row['musee'] .'</td>
                         <td>'.  $row['date_debut'] .'</td>
@@ -424,7 +420,6 @@ require_once "config.php";
           <table class="table">
             <thead class="thead-dark">
               <tr>
-                <th scope="col">#</th>
                 <th scope="col">Name</th>
                 <th scope="col">Start year</th>
                 <th scope="col">End year</th>
@@ -449,8 +444,7 @@ require_once "config.php";
         foreach ($data as $row) {
             $iterator += 1;
             echo  '<tr>
-                    <th scope="row">'. $iterator .'</th>
-                    <td>'.  $row['nom_courant'] .'</td>
+                    <th scope="row">'.  $row['nom_courant'] .'</th>
                     <td>'.  $row['date_debut'] .'</td>
                     <td>'.  $row['date_fin'] .'</td>
                     <td>'.  $row['description'] .'</td>

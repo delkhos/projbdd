@@ -7,6 +7,41 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
+require_once "config.php";
+
+$musee = $museum_don_err = $museum_don_success = "";
+
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+  if(empty(trim($_POST["musee"])) || empty(trim($_POST["amount"]))){
+      $museum_don_err = "Please fill all fields.";
+  } else{
+      $sql = "INSERT INTO Don(valeur,musee,mecene) VALUES (:amount,:musee,:id)";
+      
+      if($stmt = $pdo->prepare($sql)){
+          // Bind variables to the prepared statement as parameters
+          $stmt->bindParam(":amount", $param_amount, PDO::PARAM_STR);
+          $stmt->bindParam(":musee", $param_musee, PDO::PARAM_STR);
+          $stmt->bindParam(":id", $param_id, PDO::PARAM_STR);
+          
+          // Set parameters
+          $param_amount = trim($_POST["amount"]);
+          $param_musee = trim($_POST["musee"]);
+          $param_id = trim($_SESSION["id"]);
+          
+          // Attempt to execute the prepared statement
+          try{ 
+            $stmt->execute();
+            $museum_don_success = "Operation was a success";
+          } 
+          catch(PDOException $exception){ 
+            $museum_don_err = "This museum doesn't exist.";
+          } 
+
+          // Close statement
+          unset($stmt);
+      }
+  }
+}
 ?>
  
 <!DOCTYPE html>
@@ -38,7 +73,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
           echo '<a class="nav-item nav-link " href="adminpanel.php">Admin Panel</a>';
           }
           if(isset($_SESSION["handeldMuseum"]) && strlen($_SESSION["handeldMuseum"]) > 0){
-          echo '<a class="nav-item nav-link " href="adminpanel.php">Museum Management</a>';
+          echo '<a class="nav-item nav-link " href="management.php">Museum Management</a>';
           }
         ?>
         </div>
@@ -61,6 +96,24 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     $content = file_get_contents('http://loripsum.net/api');
     echo $content;
   ?>
+  <div class="container">
+        <h3> Make a donation.</h3>
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+            <div class="form-group">
+                <label>Amount</label>
+                <input type="number" name="amount" value="5"> 
+                <label>€</label><br>
+                <label>Museum</label>
+                <input type="text" name="musee" class="form-control <?php echo (!empty($museum_don_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $musee; ?>">
+                <span class="invalid-feedback"><?php echo $museum_don_err; ?></span>
+                <span style="color:green"><?php echo $museum_don_success; ?></span> <br>
+            </div>    
+            <div class="form-group">
+                <input type="submit" name="submit2" class="btn btn-primary" value="Donate">
+                <input type="reset" class="btn btn-secondary ml-2" value="Reset">
+            </div>
+        </form>
+    </div>
   </p>
 </body>
 </html>
