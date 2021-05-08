@@ -109,38 +109,34 @@ require_once "config.php";
                 //$content = file_get_contents('http://loripsum.net/api');
                 //echo $content;
                 $sql = "";
-                if( strlen($_POST["wname_search"])>0){
+                if( isset($lookup_table [$_POST["wname_search"]])){
                 $sql = $sql . "(nom_oeuvre LIKE :wname_search1 OR SIMILARITY(nom_oeuvre,:wname_search2) > 0.4) ";
                }; 
                 
-                if(strlen($_POST["wmovement_search"])>0){
+                if(isset($lookup_table [$_POST["wmovement_search"]])){
                   if (strlen($sql)!=0){
                     $sql = $sql."AND ";
                   };
                   $sql =  $sql."(courant_artistique LIKE :wmovement_search1 OR SIMILARITY(courant_artistique,:wmovement_search2) > 0.4 ) ";
                 };
-                if (strlen($_POST["wmuseum_search"])>0){
+                if (isset($lookup_table [$_POST["wmuseum_search"]])){
                   if (strlen($sql)!=0){
                      $sql = $sql."AND ";
                   };
-                  $sql = $sql."(musee LIKE :wmusee_search1 OR SIMILARITY(courant_artistique,:wmusee_search2) > 0.4 ) ";
-                   $wmusee_query = trim($_POST["wmuseum_search"]);
-                   $wmovement_prepared = "%".$wmovement_query."%";
-                   $stmt->bindParam(":wmusee_search1", $wmusee_prepared, PDO::PARAM_STR);
-                   $stmt->bindParam(":wmusee_search2", $wmusee_query, PDO::PARAM_STR);
-                };
-                if (strlen($_POST["wartist_search"])>0){
+                   $sql = $sql."(musee LIKE :wmusee_search1 OR SIMILARITY(courant_artistique,:wmusee_search2) > 0.4 ) ";
+                  };
+                if (isset($lookup_table [$_POST["wartist_search"]])){
                   if (strlen($sql)!=0){
                     $sql = $sql."AND ";
                   };
                   $sql = $sql."(artiste LIKE :wartist_search1 OR SIMILARITY(artiste,:wartist_search2) > 0.4 ) ";
                   };
-                if (strlen($_POST["wdate_search"])>0){
+                if (isset($lookup_table [$_POST["wdate_search"]])){
                   if (strlen($sql)!=0){
                     $sql = $sql."AND ";
                   };
                  };
-                if (strlen($_POST["wtype_search"])>0){
+                if (isset($lookup_table [$_POST["wtype_search"]])){
                   if (strlen($sql)!=0){
                     $sql = $sql."AND ";
                   };
@@ -150,36 +146,43 @@ require_once "config.php";
                   $sql = "WHERE ".$sql;
                 }
                 
-                $stmt = $pdo->prepare("SELECT DISTINCT * FROM Oeuvre a join Exposition_sans_musee b ON  a.exposition = b.expo_id".$sql);
+                $stmt = $pdo->prepare("SELECT DISTINCT * FROM Oeuvre a join Exposition_sans_musee b ON  a.exposition = b.expo_id ".$sql);
                 
-                if( strlen($_POST["wname_search"])>0){
+                if( isset($lookup_table [$_POST["wname_search"]])){
                   $wname_query = trim($_POST["wname_search"]);
                   $wname_prepared = "%".$wname_query."%"; 
                   $stmt->bindParam(":wname_search1", $wname_prepared, PDO::PARAM_STR);
                   $stmt->bindParam(":wname_search2", $wname_query, PDO::PARAM_STR);
                 }
-                if( strlen($_POST["wmovement_search"])>0){
+                if( isset($lookup_table [$_POST["wmovement_search"]])){
                   $wmovement_query = trim($_POST["wmovement_search"]);
                   $wmovement_prepared = "%".$wmovement_query."%";
                   $stmt->bindParam(":wmovement_search1", $wmovement_prepared, PDO::PARAM_STR);
                   $stmt->bindParam(":wmovement_search2", $wmovement_query, PDO::PARAM_STR);
                 }
-                if( strlen($_POST["wartist_search"])>0){
+                if( isset($lookup_table [$_POST["wartist_search"]])){
                   $wartist_query = trim($_POST["wartist_search"]);
                   $wartist_prepared = "%".$wartist_query."%";
                   $stmt->bindParam(":wartist_search1", $wartist_prepared, PDO::PARAM_STR);
                   $stmt->bindParam(":wartist_search2", $wartist_query, PDO::PARAM_STR);
                 }
-                if( strlen($_POST["wdate_search"])>0){
+                if( isset($lookup_table [$_POST["wdate_search"]])){
                   $sql = $sql."(date = :wdate_search2) ";
                   $wdate_query = trim($_POST["wdate_search"]);
                   $wdate_prepared = intval($wdate_query);
                   $stmt->bindParam(":wdate_search2", $wdate_prepared, PDO::PARAM_STR);
                 }
-                if( strlen($_POST["wtype_search"])>0){
+                if( isset($lookup_table [$_POST["wtype_search"]])){
                   $wtype_query = trim($_POST["wtype_search"]);
                   $stmt->bindParam(":wtype_search1", $wtype_query, PDO::PARAM_STR);  
                 }
+
+                if (isset($lookup_table [$_POST["wmuseum_search"]])){
+                   $wmusee_query = trim($_POST["wmuseum_search"]);
+                   $wmovement_prepared = "%".$wmovement_query."%";
+                   $stmt->bindParam(":wmusee_search1", $wmusee_prepared, PDO::PARAM_STR);
+                   $stmt->bindParam(":wmusee_search2", $wmusee_query, PDO::PARAM_STR);
+                };
                 $stmt->execute(); 
         
 
@@ -236,57 +239,61 @@ require_once "config.php";
                 //$content = file_get_contents('http://loripsum.net/api');
                 //echo $content;                
                 $sql = "";
-                if( $_POST["aname_search"]>0){
-                  $sql = $sql . "(nom_oeuvre LIKE :aname_search1 OR SIMILARITY(nom_oeuvre,:aname_search2) > 0.4) ";
+                if( isset($lookup_table [$_POST["aname_search"]])){
+                  $sql = $sql . "(nom_artiste LIKE :aname_search1 OR SIMILARITY(nom_artiste,:aname_search2) > 0.4) ";
                   }; 
 
-                if( $_POST["amovement_search"]>0){
+                if(  isset($lookup_table [$_POST["amovement_search"]])){
                   if (strlen($sql)!=0){
                     $sql = $sql."AND ";
                   };
-                  $sql = $sql . "(nom_oeuvre LIKE :amovement_search1 OR SIMILARITY(nom_oeuvre,:amovement_search2) > 0.4) ";
-                  }; 
-                if (strlen($_POST["adate_search"])>0){
+                  $sql = $sql . "( nom_artiste IN (SELECT artiste FROM participation_courant WHERE nom_courant LIKE :amovement_search1 OR SIMILARITY(nom_courant,:amovement_search2) > 0.4)) ";
+                }; 
+                if ( isset($lookup_table [$_POST["adate_search"]])){
                   if (strlen($sql)!=0){
                     $sql = $sql."AND ";
                   };
                   $sql = $sql."(:adate_search2 BETWEEN date_naissance ANd date_mort) ";
-                  $adate_query = trim($_POST["adate_search"]);
-                  $adate_prepared = intval($adate_query);
-                  $stmt->bindParam(":adate_search2", $adate_prepared, PDO::PARAM_STR);
                 };
-                if (strlen($_POST["acounty_search"])>0){
+                if( isset($lookup_table [$_POST["acountry_search"]])){
                   if (strlen($sql)!=0){
                     $sql = $sql."AND ";
                   };
                   $sql = $sql."(pays LIKE :acountry_search2) ";
-                  $adate_query = trim($_POST["adate_search"]);
-                  $adate_prepared = "%".$adate_query."%";
-                  $stmt->bindParam(":acountry_search2", $acountry_prepared, PDO::PARAM_STR);
-                };
+                 };
                 
 
                 if (strlen($sql) >0){
                   $sql = "WHERE ".$sql;
                 };
-                $stmt = $pdo->prepare( "SELECT DISTINCT * FROM Artiste a JOIN Participation_courant b ON b.artiste = a.nom_artiste".$sql);
+                $stmt = $pdo->prepare( "SELECT DISTINCT * FROM Artiste ".$sql);
                 
-                if( $_POST["aname_search"]>0){
+                if(  isset($lookup_table [$_POST["aname_search"]])){
                   $aname_query = trim($_POST["aname_search"]);
                   $aname_prepared = "%".$aname_query."%"; 
                   $stmt->bindParam(":aname_search1", $aname_prepared, PDO::PARAM_STR);
                   $stmt->bindParam(":aname_search2", $aname_query, PDO::PARAM_STR);
-                }
-                if( $_POST["amovement_search"]>0){ 
+                };
+                if(  isset($lookup_table [$_POST["amovement_search"]])){ 
                   $amovement_query = trim($_POST["amovement_search"]);
                   $amovement_prepared = "%".$amovement_query."%"; 
                   $stmt->bindParam(":amovement_search1", $amovement_prepared, PDO::PARAM_STR);
                   $stmt->bindParam(":amovement_search2", $amovement_query, PDO::PARAM_STR);
-                }
-                  
+                };
+                if(  isset($lookup_table [$_POST["adate_search"]])){
+                  $adate_query = trim($_POST["adate_search"]);
+                  $adate_prepared = intval($adate_query);
+                  $stmt->bindParam(":adate_search2", $adate_prepared, PDO::PARAM_STR);
+                };
+                if (  isset($lookup_table [$_POST["acountry_search"]])){
+                  $adate_query = trim($_POST["adate_search"]);
+                  $adate_prepared = "%".$adate_query."%";
+                  $stmt->bindParam(":acountry_search2", $acountry_prepared, PDO::PARAM_STR);
+                };
+
                   $stmt->execute();                 
  
-       $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $iterator = 0;
         foreach ($data as $row) {
             $iterator += 1;
@@ -308,13 +315,13 @@ require_once "config.php";
         <div class="tab-pane fade" id="museums">
           <form class="form-inline" method="post" action="advanced-search.php">
             <p>   name:  </p>
-            <input class="form-control mr-sm-2" name="mname_search" type="search" placeholder="work" aria-label="Search">
+            <input class="form-control mr-sm-2" name="mname_search" type="search" placeholder="name" aria-label="Search">
             <p>   piece:  </p>      
             <input class="form-control mr-sm-2" name="mwork_search" type="search" placeholder="work" aria-label="Search">
             <p>   adress:  </p>
             <input class="form-control mr-sm-2" name="madress_search" type="search" placeholder="adress" aria-label="Search">
-            <p>   date:  </p>
-            <input class="form-control mr-sm-2" name="mcountry_search" type="search" placeholder="country" aria-label="Search">
+            <p>   contry:  </p>
+            <input class="form-control mr-sm-2" name="mcountry_search" type="search" placeholder="date" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
           </form>
    
@@ -330,23 +337,70 @@ require_once "config.php";
             </thead>
             <tbody>
               <?php
-                //$content = file_get_contents('http://loripsum.net/api');
-                //echo $content;
-        $stmt = $pdo->prepare("
- = a.nom_artiste
-        WHERE (nom_artiste LIKE :aname_search1 OR 
-        SIMILARITY(nom_artiste,:aname_search2) > 0.4 ) AND
-        (nationalite LIKE :acountry_search1 OR 
-        SIMILARITY(nationalite,:acountry_search2) > 0.4) AND
-        (nom_courant LIKE :amovement_search1 OR
-        SIMILARITY(nom_courant,:amovement_search2) > 0.4 ) AND
-        (IF :adate_search2 NOT LIKE '' THEN :adate_search1 BETWEEN a.date_naissance AND a.date_mort)
-        ");
-         
-        $search_prepared = "%".$search_query."%";
-        $stmt->bindParam(":search1", $search_prepared, PDO::PARAM_STR);
-        $stmt->bindParam(":search2", $search_query, PDO::PARAM_STR);
-        $stmt->execute(); 
+              if ($_SERVER["REQUEST_METHOD"] == "POST"){
+                $sql = "";
+                if( isset($lookup_table [$_POST["mname_search"]])){
+                  $sql = $sql . "(nom_musee LIKE :mname_search1 OR SIMILARITY(nom_musee,:mname_search2) > 0.4) ";
+                };
+
+                if( isset($lookup_table [$_POST["mwork_search"]])){
+                  if (strlen($sql)!=0){
+                    $sql = $sql."AND ";
+                  }; 
+                  $sql = $sql . "(nom_musee IN (SELECT DISTINCT musee FROM Oeuvre WHERE nom_oeuvre LIKE :mwork_search1 OR SIMILARITY(nom_oeuvre,:mwork_search2) > 0.4)) ";
+                };
+
+                if( isset($lookup_table [$_POST["madress_search"]])){
+                  if (strlen($sql)!=0){
+                    $sql = $sql."AND ";
+                  };
+                  $sql = $sql . "(nom_musee LIKE :madress_search1 OR SIMILARITY(adresse,:madress_search2) > 0.4) ";
+                }; 
+                if( isset($lookup_table [$_POST["mcountry_search"]])){
+                  if (strlen($sql)!=0){
+                    $sql = $sql."AND ";
+                  };   
+                  $sql = $sql . "(pays LIKE :mcountry_search1 OR SIMILARITY(pays,:mcoutry_search2) > 0.4) ";
+
+                }; 
+
+                if (strlen($sql) >0){
+                  $sql = "WHERE ".$sql;
+                };
+                $stmt = $pdo->prepare( "SELECT DISTINCT * FROM Musee ".$sql);
+                 
+                if( isset($lookup_values[$_POST["mname_search"]])){
+                  $mname_query = trim($_POST["mname_search"]);
+                  $mname_prepared = "%".$mname_query."%"; 
+                  $stmt->bindParam(":mname_search1", $mname_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":mname_search2", $mname_query, PDO::PARAM_STR);
+                };
+
+                
+                if( isset($lookup_values[$_POST["mwork_search"]])){
+                  $mwork_query = trim($_POST["mwork_search"]);
+                  $mwork_prepared = "%".$mwork_query."%"; 
+                  $stmt->bindParam(":mwork_search1", $mwork_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":mwork_search2", $mwork_query, PDO::PARAM_STR);
+                };
+                
+                if( isset($lookup_values[$_POST["madress_search"]])){
+                  $madress_query = trim($_POST["madress_search"]);
+                  $madress_prepared = "%".$madress_query."%"; 
+                  $stmt->bindParam(":madress_search1", $madress_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":madress_search2", $madress_query, PDO::PARAM_STR);
+                };
+
+                
+                if( isset($lookup_values[$_POST["mcountry_search"]])){
+                  $mcountry_query = trim($_POST["mcountry_search"]);
+                  $mcountry_prepared = "%".$mcountry_query."%"; 
+                  $stmt->bindParam(":mcountry_search1", $mcountry_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":mcountry_search2", $mcountry_query, PDO::PARAM_STR);
+                };
+
+                $stmt->execute();
+
         $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $iterator = 0;
         foreach ($data as $row) {
@@ -360,6 +414,7 @@ require_once "config.php";
                   </tr>'
             ;
         }
+              }
               ?>
             </tbody>
           </table>
@@ -384,6 +439,19 @@ require_once "config.php";
           
           <div class="tab-content">
             <div class="tab-pane fade show active" id="perm">
+              
+              <form class="form-inline" method="post" action="advanced-search.php">
+                <p>   name:  </p>
+                <input class="form-control mr-sm-2" name="pename_search" type="search" placeholder="name" aria-label="Search">
+                <p>   art piece:  </p>
+                <input class="form-control mr-sm-2" name="pework_search" type="search" placeholder="art piece" aria-label="Search">
+                <p>   museum:  </p>       
+                <input class="form-control mr-sm-2" name="pemuseum_search" type="search" placeholder="museum" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              </form>
+    
+
+
               <table class="table">
                 <thead class="thead-dark">
                   <tr>
@@ -393,20 +461,48 @@ require_once "config.php";
                   </tr>
                 </thead>
                 <tbody>
-                  <?php
-                    //$content = file_get_contents('http://loripsum.net/api');
-                    //echo $content;
-            $stmt = $pdo->prepare("
-            SELECT DISTINCT * FROM Exposition_permanente
-            WHERE nom_expo LIKE :search1 OR 
-            SIMILARITY(nom_expo,:search2) > 0.4 OR
-            musee LIKE :search1 OR 
-            SIMILARITY(musee,:search2) > 0.4
-            ");
-            $search_prepared = "%".$search_query."%";
-            $stmt->bindParam(":search1", $search_prepared, PDO::PARAM_STR);
-            $stmt->bindParam(":search2", $search_query, PDO::PARAM_STR);
-            $stmt->execute(); 
+                <?php
+
+                if ($_SERVER["REQUEST_METHOD"] == "POST"){
+                $sql = "";
+                if( isset($lookup_table[$_POST["pename_search"]])){
+                  $sql = $sql . "(nom_expo LIKE :pename_search1 OR SIMILARITY(nom_expo,:pename_search2) > 0.4) ";
+                };
+                if( isset($lookup_table[$_POST["pework_search"]])){
+                  $sql = $sql . "(expo_id IN (SELECT exposition FROM Oeuvre WHERE exposition LIKE :pework_search1 OR SIMILARITY(nom_expo,:pework_search2) > 0.4)) ";
+                };
+                if( isset($lookup_table[$_POST["pemuseum_search"]])){
+                  $sql = $sql . "(musee LIKE :pemuseum_search1 OR SIMILARITY(musee,:pemuseum_search2) > 0.4) ";
+                };
+
+                if (strlen($sql) >0){
+                  $sql = "WHERE ".$sql;
+                };
+                
+                $stmt = $pdo->prepare( "SELECT DISTINCT * FROM Exposition_permanente ".$sql);
+                
+                if(  isset($lookup_table [$_POST["pename_search"]])){
+                  $pename_query = trim($_POST["pename_search"]);
+                  $pename_prepared = "%".$pename_query."%"; 
+                  $stmt->bindParam(":pename_search1", $pename_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":pename_search2", $pename_query, PDO::PARAM_STR);
+                };
+                if( isset($lookup_table[$_POST["pework_search"]])){
+                  $pework_query = trim($_POST["pework_search"]);
+                  $pework_prepared = "%".$pework_query."%"; 
+                  $stmt->bindParam(":pework_search1", $pework_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":pework_search2", $pework_query, PDO::PARAM_STR);
+                };
+                if( isset($lookup_table[$_POST["pemuseum_search"]])){
+                  $pemuseum_query = trim($_POST["pemuseum_search"]);
+                  $pemuseum_prepared = "%".$pemuseum_query."%"; 
+                  $stmt->bindParam(":pemuseum_search1", $pemuseum_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":pemuseum_search2", $pemuseum_query, PDO::PARAM_STR);
+                };
+                
+                $stmt->execute(); 
+                
+              
             $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $iterator = 0;
             foreach ($data as $row) {
@@ -418,11 +514,25 @@ require_once "config.php";
                       </tr>'
                 ;
             }
+                }
                   ?>
                 </tbody>
               </table>
             </div>
             <div class="tab-pane fade" id="tempoa">
+              
+              <form class="form-inline" method="post" action="advanced-search.php">
+                <p>   name:  </p>
+                <input class="form-control mr-sm-2" name="aename_search" type="search" placeholder="name" aria-label="Search">
+                <p>   art piece:  </p>
+                <input class="form-control mr-sm-2" name="aework_search" type="search" placeholder="art piece" aria-label="Search">
+                <p>   museum:  </p>       
+                <input class="form-control mr-sm-2" name="aemuseum_search" type="search" placeholder="museum" aria-label="Search">
+                <p>   artist:  </p>
+                <input class="form-control mr-sm-2" name="aeartist_search" type="search" placeholder="artist" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              </form>
+              
               <table class="table">
                 <thead class="thead-dark">
                   <tr>
@@ -436,22 +546,54 @@ require_once "config.php";
                 </thead>
                 <tbody>
                   <?php
-                    //$content = file_get_contents('http://loripsum.net/api');
-                    //echo $content;
-            $stmt = $pdo->prepare("
-            SELECT DISTINCT * FROM Exposition_temporaire_artiste
-            WHERE nom_expo LIKE :search1 OR 
-            SIMILARITY(nom_expo,:search2) > 0.4 OR
-            musee LIKE :search1 OR 
-            SIMILARITY(musee,:search2) > 0.4 OR
-            artiste LIKE :search1 OR 
-            SIMILARITY(artiste,:search2) > 0.4
-            ");
-            $search_prepared = "%".$search_query."%";
-            $stmt->bindParam(":search1", $search_prepared, PDO::PARAM_STR);
-            $stmt->bindParam(":search2", $search_query, PDO::PARAM_STR);
-            $stmt->execute(); 
-            $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+ 
+                if ($_SERVER["REQUEST_METHOD"] == "POST"){
+                $sql = "";
+                if( isset($lookup_table[$_POST["aename_search"]])){
+                  $sql = $sql . "(nom_expo LIKE :aename_search1 OR SIMILARITY(nom_expo,:aename_search2) > 0.4) ";
+                };
+                if( isset($lookup_table[$_POST["aework_search"]])){
+                  $sql = $sql . "(expo_id IN (SELECT exposition FROM Oeuvre WHERE exposition LIKE :aework_search1 OR SIMILARITY(nom_expo,:aework_search2) > 0.4)) ";
+                };
+                if( isset($lookup_table[$_POST["aemuseum_search"]])){
+                  $sql = $sql . "(musee LIKE :aemuseum_search1 OR SIMILARITY(musee,:aemuseum_search2) > 0.4) ";
+                };
+                if( isset($lookup_table[$_POST["aeartist_search"]])){
+                  $sql = $sql . "(musee LIKE :aeartist_search1 OR SIMILARITY(musee,:aeartist_search2) > 0.4) ";
+                };
+                if (strlen($sql) >0){
+                  $sql = "WHERE ".$sql;
+                };
+                
+                $stmt = $pdo->prepare( "SELECT DISTINCT * FROM Exposition_temporaire_artiste ".$sql);
+                
+                if(  isset($lookup_table [$_POST["aename_search"]])){
+                  $aename_query = trim($_POST["aename_search"]);
+                  $aename_prepared = "%".$aename_query."%"; 
+                  $stmt->bindParam(":aename_search1", $aename_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":aename_search2", $aename_query, PDO::PARAM_STR);
+                };
+                if( isset($lookup_table[$_POST["aework_search"]])){
+                  $aework_query = trim($_POST["aework_search"]);
+                  $aework_prepared = "%".$aework_query."%"; 
+                  $stmt->bindParam(":aework_search1", $aework_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":aework_search2", $aework_query, PDO::PARAM_STR);
+                };
+                if( isset($lookup_table[$_POST["aemuseum_search"]])){
+                  $aemuseum_query = trim($_POST["aemuseum_search"]);
+                  $aemuseum_prepared = "%".$aemuseum_query."%"; 
+                  $stmt->bindParam(":aemuseum_search1", $aemuseum_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":aemuseum_search2", $aemuseum_query, PDO::PARAM_STR);
+                };
+                if( isset($lookup_table[$_POST["aeartist_search"]])){
+                  $aeartist_query = trim($_POST["aeartist_search"]);
+                  $aeartist_prepared = "%".$aeartist_query."%"; 
+                  $stmt->bindParam(":aeartist_search1", $aeartist_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":aeartist_search2", $aeartist_query, PDO::PARAM_STR);
+                };
+                $stmt->execute();               
+            
+           $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $iterator = 0;
             foreach ($data as $row) {
                 $iterator += 1;
@@ -465,11 +607,26 @@ require_once "config.php";
                       </tr>'
                 ;
             }
+                }
                   ?>
                 </tbody>
               </table>
             </div>
             <div class="tab-pane fade" id="tempop">
+               
+              <form class="form-inline" method="post" action="advanced-search.php">
+                <p>   name:  </p>
+                <input class="form-control mr-sm-2" name="cename_search" type="search" placeholder="name" aria-label="Search">
+                <p>   art piece:  </p>
+                <input class="form-control mr-sm-2" name="cework_search" type="search" placeholder="art piece" aria-label="Search">
+                <p>   museum:  </p>       
+                <input class="form-control mr-sm-2" name="cemuseum_search" type="search" placeholder="museum" aria-label="Search">
+                <p>   country:  </p>
+                <input class="form-control mr-sm-2" name="cecountry_search" type="search" placeholder="country" aria-label="Search">
+
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              </form>
+
               <table class="table">
                 <thead class="thead-dark">
                   <tr>
@@ -483,21 +640,54 @@ require_once "config.php";
                 </thead>
                 <tbody>
                   <?php
-                    //$content = file_get_contents('http://loripsum.net/api');
-                    //echo $content;
-            $stmt = $pdo->prepare("
-            SELECT DISTINCT * FROM Exposition_temporaire_pays
-            WHERE nom_expo LIKE :search1 OR 
-            SIMILARITY(nom_expo,:search2) > 0.4 OR
-            musee LIKE :search1 OR 
-            SIMILARITY(musee,:search2) > 0.4 OR
-            pays LIKE :search1 OR 
-            SIMILARITY(pays,:search2) > 0.4
-            ");
-            $search_prepared = "%".$search_query."%";
-            $stmt->bindParam(":search1", $search_prepared, PDO::PARAM_STR);
-            $stmt->bindParam(":search2", $search_query, PDO::PARAM_STR);
-            $stmt->execute(); 
+           
+  
+                if ($_SERVER["REQUEST_METHOD"] == "POST"){
+                $sql = "";
+                if( isset($lookup_table[$_POST["cename_search"]])){
+                  $sql = $sql . "(nom_expo LIKE :cename_search1 OR SIMILARITY(nom_expo,:cename_search2) > 0.4) ";
+                };
+                if( isset($lookup_table[$_POST["cework_search"]])){
+                  $sql = $sql . "(expo_id IN (SELECT exposition FROM Oeuvre WHERE exposition LIKE :cework_search1 OR SIMILARITY(nom_expo,:cework_search2) > 0.4)) ";
+                };
+                if( isset($lookup_table[$_POST["cemuseum_search"]])){
+                  $sql = $sql . "(musee LIKE :cemuseum_search1 OR SIMILARITY(musee,:cemuseum_search2) > 0.4) ";
+                };
+                if( isset($lookup_table[$_POST["cecountry_search"]])){
+                  $sql = $sql . "(musee LIKE :cecountry_search1 OR SIMILARITY(musee,:cecountry_search2) > 0.4) ";
+                };
+                if (strlen($sql) >0){
+                  $sql = "WHERE ".$sql;
+                };
+                
+                $stmt = $pdo->prepare( "SELECT DISTINCT * FROM Exposition_temporaire_pays ".$sql);
+                
+                if(  isset($lookup_table [$_POST["cename_search"]])){
+                  $cename_query = trim($_POST["cename_search"]);
+                  $cename_prepared = "%".$cename_query."%"; 
+                  $stmt->bindParam(":aename_search1", $cename_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":aename_search2", $cename_query, PDO::PARAM_STR);
+                };
+                if( isset($lookup_table[$_POST["cework_search"]])){
+                  $cework_query = trim($_POST["cework_search"]);
+                  $cework_prepared = "%".$cework_query."%"; 
+                  $stmt->bindParam(":aework_search1", $cework_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":aework_search2", $cework_query, PDO::PARAM_STR);
+                };
+                if( isset($lookup_table[$_POST["cemuseum_search"]])){
+                  $cemuseum_query = trim($_POST["cemuseum_search"]);
+                  $cemuseum_prepared = "%".$cemuseum_query."%"; 
+                  $stmt->bindParam(":cemuseum_search1", $cemuseum_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":cemuseum_search2", $cemuseum_query, PDO::PARAM_STR);
+                };
+                if( isset($lookup_table[$_POST["cecountry_search"]])){
+                  $cecountry_query = trim($_POST["cecountry_search"]);
+                  $cecountry_prepared = "%".$cecountry_query."%"; 
+                  $stmt->bindParam(":cecountry_search1", $cecountry_prepared_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":cecountry_search2", $cecountry_query, PDO::PARAM_STR);
+                };
+                $stmt->execute();                          
+ 
             $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $iterator = 0;
             foreach ($data as $row) {
@@ -512,11 +702,27 @@ require_once "config.php";
                       </tr>'
                 ;
             }
+                }
                   ?>
                 </tbody>
               </table>
             </div>
             <div class="tab-pane fade" id="tempoc">
+              <form class="form-inline" method="post" action="advanced-search.php">
+                <p>   name:  </p>
+                <input class="form-control mr-sm-2" name="mename_search" type="search" placeholder="name" aria-label="Search">
+                <p>   art piece:  </p>
+                <input class="form-control mr-sm-2" name="mework_search" type="search" placeholder="art piece" aria-label="Search">
+                <p>   museum:  </p>       
+                <input class="form-control mr-sm-2" name="memuseum_search" type="search" placeholder="museum" aria-label="Search">
+                <p>   movement:  </p>
+                <input class="form-control mr-sm-2" name="memovement_search" type="search" placeholder="movement" aria-label="Search">
+
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              </form>
+
+
+
               <table class="table">
                 <thead class="thead-dark">
                   <tr>
@@ -530,21 +736,55 @@ require_once "config.php";
                 </thead>
                 <tbody>
                   <?php
-                    //$content = file_get_contents('http://loripsum.net/api');
-                    //echo $content;
-            $stmt = $pdo->prepare("
-            SELECT DISTINCT * FROM Exposition_temporaire_courant
-            WHERE nom_expo LIKE :search1 OR 
-            SIMILARITY(nom_expo,:search2) > 0.4 OR
-            musee LIKE :search1 OR 
-            SIMILARITY(musee,:search2) > 0.4 OR
-            courant LIKE :search1 OR 
-            SIMILARITY(courant,:search2) > 0.4
-            ");
-            $search_prepared = "%".$search_query."%";
-            $stmt->bindParam(":search1", $search_prepared, PDO::PARAM_STR);
-            $stmt->bindParam(":search2", $search_query, PDO::PARAM_STR);
-            $stmt->execute(); 
+            
+   
+                if ($_SERVER["REQUEST_METHOD"] == "POST"){
+                $sql = "";
+                if( isset($lookup_table[$_POST["mename_search"]])){
+                  $sql = $sql . "(nom_expo LIKE :mename_search1 OR SIMILARITY(nom_expo,:mename_search2) > 0.4) ";
+                };
+                if( isset($lookup_table[$_POST["mework_search"]])){
+                  $sql = $sql . "(expo_id IN (SELECT exposition FROM Oeuvre WHERE exposition LIKE :mework_search1 OR SIMILARITY(nom_expo,:mework_search2) > 0.4)) ";
+                };
+                if( isset($lookup_table[$_POST["memuseum_search"]])){
+                  $sql = $sql . "(musee LIKE :memuseum_search1 OR SIMILARITY(musee,:memuseum_search2) > 0.4) ";
+                };
+                if( isset($lookup_table[$_POST["memovement_search"]])){
+                  $sql = $sql . "(musee LIKE :memovement_search1 OR SIMILARITY(musee,:memovement_search2) > 0.4) ";
+                };
+                if (strlen($sql) >0){
+                  $sql = "WHERE ".$sql;
+                };
+                
+                $stmt = $pdo->prepare( "SELECT DISTINCT * FROM Exposition_temporaire_courant ".$sql);
+                
+                if(  isset($lookup_table [$_POST["mename_search"]])){
+                  $mename_query = trim($_POST["mename_search"]);
+                  $mename_prepared = "%".$mename_query."%"; 
+                  $stmt->bindParam(":mename_search1", $mename_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":mename_search2", $mename_query, PDO::PARAM_STR);
+                };
+                if( isset($lookup_table[$_POST["mework_search"]])){
+                  $mework_query = trim($_POST["mework_search"]);
+                  $mework_prepared = "%".$mework_query."%"; 
+                  $stmt->bindParam(":aework_search1", $mework_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":aework_search2", $mework_query, PDO::PARAM_STR);
+                };
+                if( isset($lookup_table[$_POST["memuseum_search"]])){
+                  $memuseum_query = trim($_POST["memuseum_search"]);
+                  $memuseum_prepared = "%".$memuseum_query."%"; 
+                  $stmt->bindParam(":memuseum_search1", $memuseum_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":memuseum_search2", $memuseum_query, PDO::PARAM_STR);
+                };
+                if( isset($lookup_table[$_POST["memovement_search"]])){
+                  $memovement_query = trim($_POST["memovement_search"]);
+                  $memovement_prepared = "%".$memovement_query."%"; 
+                  $stmt->bindParam(":memovement_search1", $memovement_prepared_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":memovement_search2", $memovement_query, PDO::PARAM_STR);
+                };
+                $stmt->execute();                          
+                 
+            
             $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             $iterator = 0;
             foreach ($data as $row) {
@@ -559,6 +799,7 @@ require_once "config.php";
                       </tr>'
                 ;
             }
+                }
                   ?>
                 </tbody>
               </table>
@@ -571,10 +812,8 @@ require_once "config.php";
             <input class="form-control mr-sm-2" name="moname_search" type="search" placeholder="name" aria-label="Search">
             <p>   artist:  </p>       
             <input class="form-control mr-sm-2" name="moartist_search" type="search" placeholder="artist" aria-label="Search">
-            <p>   piece:  </p>
-            <input class="form-control mr-sm-2" name="mopiece_search" type="search" placeholder="artist" aria-label="Search">
-            <p>   date:  </p>
-            <input class="form-control mr-sm-2" name="modate_search" type="search" placeholder="date" aria-label="Search">
+            <p>   art piece:  </p>
+            <input class="form-control mr-sm-2" name="mowork_search" type="search" placeholder="art piece" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
           </form>
  
@@ -590,17 +829,45 @@ require_once "config.php";
             </thead>
             <tbody>
               <?php
-                //$content = file_get_contents('http://loripsum.net/api');
-                //echo $content;
-        $stmt = $pdo->prepare("
-        SELECT DISTINCT * FROM Courant_artistique
-        WHERE nom_courant LIKE :name OR 
-        SIMILARITY(nom_courant,:search2) > 0.4
-        ");
-        $search_prepared = "%".$search_query."%";
-        $stmt->bindParam(":search1", $search_prepared, PDO::PARAM_STR);
-        $stmt->bindParam(":search2", $search_query, PDO::PARAM_STR);
-        $stmt->execute(); 
+                
+              if ($_SERVER["REQUEST_METHOD"] == "POST"){
+                $sql = "";
+                if( isset($lookup_table[$_POST["moname_search"]])){
+                  $sql = $sql . "(nom_courant LIKE :mename_search1 OR SIMILARITY(nom_expo,:mename_search2) > 0.4) ";
+                };
+                if( isset($lookup_table[$_POST["mowork_search"]])){
+                  $sql = $sql ."(nom_courant IN (SELECT courant_artistique FROM Oeuvre WHERE nom_oeuvre LIKE :mowork_search1 OR SIMILARITY(nom_oeuvre,:mowork_search2) > 0.4)) ";
+                };
+                if( isset($lookup_table[$_POST["moartist_search"]])){
+                  $sql = $sql . "(musee LIKE :moartist_search1 OR SIMILARITY(musee,:moartist_search2) > 0.4) ";
+                };
+                
+                if (strlen($sql) >0){
+                  $sql = "WHERE ".$sql;
+                };
+                
+                $stmt = $pdo->prepare( "SELECT DISTINCT * FROM Courant_artistique ".$sql);
+                
+                if(  isset($lookup_table [$_POST["moname_search"]])){
+                  $moname_query = trim($_POST["moname_search"]);
+                  $moname_prepared = "%".$moname_query."%"; 
+                  $stmt->bindParam(":aename_search1", $moname_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":aename_search2", $moname_query, PDO::PARAM_STR);
+                };
+                if( isset($lookup_table[$_POST["mowork_search"]])){
+                  $mowork_query = trim($_POST["mowork_search"]);
+                  $mowork_prepared = "%".$mowork_query."%"; 
+                  $stmt->bindParam(":aework_search1", $mowork_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":aework_search2", $mowork_query, PDO::PARAM_STR);
+                };
+                if( isset($lookup_table[$_POST["moartist_search"]])){
+                  $moartist_query = trim($_POST["moartist_search"]);
+                  $moartist_prepared = "%".$moartist_query."%"; 
+                  $stmt->bindParam(":moartist_search1", $moartist_prepared, PDO::PARAM_STR);
+                  $stmt->bindParam(":moartist_search2", $moartist_query, PDO::PARAM_STR);
+                };
+                $stmt->execute();        
+
         $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $iterator = 0;
         foreach ($data as $row) {
@@ -614,6 +881,7 @@ require_once "config.php";
                   </tr>'
             ;
         }
+              }
               ?>
             </tbody>
           </table>
@@ -622,24 +890,4 @@ require_once "config.php";
 
 
   </body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-     
+</html> 
