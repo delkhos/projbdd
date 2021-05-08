@@ -67,7 +67,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
           <a class="nav-item nav-link " href="index.php">Home</a>
           <a class="nav-item nav-link " href="reset-password.php">Reset your password</a>
           <a class="nav-item nav-link " href="logout.php">Sign out</a>
+          <!--
           <a class="nav-item nav-link " href="advanced-search.php">Advanced Search</a>
+          -->
         <?php
           if(isset($_SESSION["isAdmin"]) && $_SESSION["isAdmin"] === true){
           echo '<a class="nav-item nav-link " href="adminpanel.php">Admin Panel</a>';
@@ -91,13 +93,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         <a href="logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
     </p>
   -->
+  <h4>Welcome to ARTS EXPLORER.</h4>
+  <h4>If you are an art enthusiast, this website is for you.</h4>
+  <h4>Have fun ! And do not hesitate to make a donation !</h4>
   <p>
   <?php
-    $content = file_get_contents('http://loripsum.net/api');
-    echo $content;
+    //$content = file_get_contents('http://loripsum.net/api');
+    //echo $content;
   ?>
   <div class="container">
-        <h3> Make a donation.</h3>
+        <h4> Make a donation.</h4>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="form-group">
                 <label>Amount</label>
