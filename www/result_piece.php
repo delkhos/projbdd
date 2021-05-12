@@ -93,12 +93,13 @@
               if (strlen($sql)!=0){
                 $sql = $sql."AND ";
               };
+              $sql = $sql."(date = :wdate_search2) ";
              };
             if ( strlen($_POST["wtype_search"])>0){
               if (strlen($sql)!=0){
                 $sql = $sql."AND ";
               };
-              $sql = $sql. "(type LIKE :wtype_search1)";         
+              $sql = $sql. "(type LIKE :wtype_search1) OR SIMILARITY(type,:wtype_search2) > 0.4 ) ";         
             };
             
             if (strlen($sql) >0){
@@ -126,14 +127,16 @@
               $stmt->bindParam(":wartist_search2", $wartist_query, PDO::PARAM_STR);
             }
             if(  strlen($_POST["wdate_search"])>0){
-              $sql = $sql."(date = :wdate_search2) ";
               $wdate_query = trim($_POST["wdate_search"]);
               $wdate_prepared = intval($wdate_query);
               $stmt->bindParam(":wdate_search2", $wdate_prepared, PDO::PARAM_STR);
             }
             if(  strlen($_POST["wtype_search"])>0){
               $wtype_query = trim($_POST["wtype_search"]);
-              $stmt->bindParam(":wtype_search1", $wtype_query, PDO::PARAM_STR);  
+              $wtype_prepared = "%".$wtype_query."%"; 
+              $stmt->bindParam(":wtype_search1", $wtype_prepared, PDO::PARAM_STR);
+              $stmt->bindParam(":wtype_search2", $wtype_query, PDO::PARAM_STR);
+            
             }
             
             if ( strlen($_POST["wmuseum_search"])>0){
