@@ -68,13 +68,25 @@
             $sql = $sql . "(nom_expo LIKE :mename_search1 OR SIMILARITY(nom_expo,:mename_search2) > 0.4) ";
           };
           if(  strlen($_POST["mework_search"])>0){
-            $sql = $sql . "(expo_id IN (SELECT exposition FROM Oeuvre WHERE exposition LIKE :mework_search1 OR SIMILARITY(nom_expo,:mework_search2) > 0.4)) ";
+            if (strlen($sql) != 0) {
+              $sql = $sql . "AND ";
+            }
+            ;
+            $sql = $sql . "(expo_id IN (SELECT exposition FROM Oeuvre WHERE nom_oeuvre LIKE :mework_search1 OR SIMILARITY(nom_oeuvre,:mework_search2) > 0.4)) ";
           };
           if(  strlen($_POST["memuseum_search"])>0){
+            if (strlen($sql) != 0) {
+              $sql = $sql . "AND ";
+            }
+            ;
             $sql = $sql . "(musee LIKE :memuseum_search1 OR SIMILARITY(musee,:memuseum_search2) > 0.4) ";
           };
           if(  strlen($_POST["memovement_search"])>0){
-            $sql = $sql . "(musee LIKE :memovement_search1 OR SIMILARITY(musee,:memovement_search2) > 0.4) ";
+            if (strlen($sql) != 0) {
+              $sql = $sql . "AND ";
+            }
+            ;
+            $sql = $sql . "(courant LIKE :memovement_search1 OR SIMILARITY(courant,:memovement_search2) > 0.4) ";
           };
           if (strlen($sql) >0){
             $sql = "WHERE ".$sql;
@@ -91,8 +103,8 @@
           if(  strlen($_POST["mework_search"])>0){
             $mework_query = trim($_POST["mework_search"]);
            $mework_prepared = "%".$mework_query."%"; 
-            $stmt->bindParam(":aework_search1", $mework_prepared, PDO::PARAM_STR);
-            $stmt->bindParam(":aework_search2", $mework_query, PDO::PARAM_STR);
+            $stmt->bindParam(":mework_search1", $mework_prepared, PDO::PARAM_STR);
+            $stmt->bindParam(":mework_search2", $mework_query, PDO::PARAM_STR);
           };
           if(  strlen($_POST["memuseum_search"])>0){
             $memuseum_query = trim($_POST["memuseum_search"]);

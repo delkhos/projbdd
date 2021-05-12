@@ -70,7 +70,6 @@
             if( strlen($_POST["wname_search"])>0){
             $sql = $sql . "(nom_oeuvre LIKE :wname_search1 OR SIMILARITY(nom_oeuvre,:wname_search2) > 0.4) ";
             }; 
-            print($_POST["wmovement_search"]);
             if( strlen($_POST["wmovement_search"])>0){
               if (strlen($sql)!=0){
                 $sql = $sql."AND ";
@@ -81,7 +80,7 @@
               if (strlen($sql)!=0){
                  $sql = $sql."AND ";
               };
-               $sql = $sql."(musee LIKE :wmusee_search1 OR SIMILARITY(courant_artistique,:wmusee_search2) > 0.4 ) ";
+               $sql = $sql."(musee LIKE :wmuseum_search1 OR SIMILARITY(musee,:wmuseum_search2) > 0.4 ) ";
               };
             if ( strlen($_POST["wartist_search"])>0){
               if (strlen($sql)!=0){
@@ -89,23 +88,16 @@
               };
               $sql = $sql."(artiste LIKE :wartist_search1 OR SIMILARITY(artiste,:wartist_search2) > 0.4 ) ";
               };
-            if ( strlen($_POST["wdate_search"])>0){
-              if (strlen($sql)!=0){
-                $sql = $sql."AND ";
-              };
-              $sql = $sql."(date = :wdate_search2) ";
-             };
             if ( strlen($_POST["wtype_search"])>0){
               if (strlen($sql)!=0){
                 $sql = $sql."AND ";
               };
-              $sql = $sql. "(type LIKE :wtype_search1) OR SIMILARITY(type,:wtype_search2) > 0.4 ) ";         
+              $sql = $sql. " type = :wtype_search1 ";         
             };
             
             if (strlen($sql) >0){
               $sql = "WHERE ".$sql;
             }
-            
             $stmt = $pdo->prepare("SELECT DISTINCT * FROM Oeuvre a join Exposition_sans_musee b ON  a.exposition = b.expo_id ".$sql);
             
             if( strlen($_POST["wname_search"])>0){
@@ -126,24 +118,18 @@
               $stmt->bindParam(":wartist_search1", $wartist_prepared, PDO::PARAM_STR);
               $stmt->bindParam(":wartist_search2", $wartist_query, PDO::PARAM_STR);
             }
-            if(  strlen($_POST["wdate_search"])>0){
-              $wdate_query = trim($_POST["wdate_search"]);
-              $wdate_prepared = intval($wdate_query);
-              $stmt->bindParam(":wdate_search2", $wdate_prepared, PDO::PARAM_STR);
-            }
             if(  strlen($_POST["wtype_search"])>0){
+
               $wtype_query = trim($_POST["wtype_search"]);
-              $wtype_prepared = "%".$wtype_query."%"; 
-              $stmt->bindParam(":wtype_search1", $wtype_prepared, PDO::PARAM_STR);
-              $stmt->bindParam(":wtype_search2", $wtype_query, PDO::PARAM_STR);
+              $stmt->bindParam(":wtype_search1", $wtype_query, PDO::PARAM_STR);
             
             }
             
             if ( strlen($_POST["wmuseum_search"])>0){
-               $wmusee_query = trim($_POST["wmuseum_search"]);
-               $wmovement_prepared = "%".$wmovement_query."%";
-               $stmt->bindParam(":wmusee_search1", $wmusee_prepared, PDO::PARAM_STR);
-               $stmt->bindParam(":wmusee_search2", $wmusee_query, PDO::PARAM_STR);
+               $wmuseum_query = trim($_POST["wmuseum_search"]);
+               $wmuseum_prepared = "%".$wmuseum_query."%";
+               $stmt->bindParam(":wmuseum_search1", $wmuseum_prepared, PDO::PARAM_STR);
+               $stmt->bindParam(":wmuseum_search2", $wmuseum_query, PDO::PARAM_STR);
             };
             $stmt->execute(); 
             

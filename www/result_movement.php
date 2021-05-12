@@ -82,13 +82,21 @@
           if ($_SERVER["REQUEST_METHOD"] == "POST"){
             $sql = "";
             if( strlen($_POST["moname_search"])>0){
-              $sql = $sql . "(nom_courant LIKE :mename_search1 OR SIMILARITY(nom_expo,:mename_search2) > 0.4) ";
+              $sql = $sql . "(nom_courant LIKE :moname_search1 OR SIMILARITY(nom_courant,:moname_search2) > 0.4) ";
             };
             if( strlen($_POST["mowork_search"])>0){
+              if (strlen($sql) != 0) {
+                $sql = $sql . "AND ";
+              }
+              ;
               $sql = $sql ."(nom_courant IN (SELECT courant_artistique FROM Oeuvre WHERE nom_oeuvre LIKE :mowork_search1 OR SIMILARITY(nom_oeuvre,:mowork_search2) > 0.4)) ";
             };
             if( strlen($_POST["moartist_search"])>0){
-              $sql = $sql . "(musee LIKE :moartist_search1 OR SIMILARITY(musee,:moartist_search2) > 0.4) ";
+              if (strlen($sql) != 0) {
+                $sql = $sql . "AND ";
+              }
+              ;
+              $sql = $sql ."(nom_courant IN (SELECT nom_courant FROM Participation_courant WHERE artiste LIKE :moartist_search1 OR SIMILARITY(artiste,:moartist_search2) > 0.4)) ";
             };
             
             if (strlen($sql) >0){

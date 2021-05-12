@@ -68,13 +68,25 @@
             $sql = $sql . "(nom_expo LIKE :cename_search1 OR SIMILARITY(nom_expo,:cename_search2) > 0.4) ";
           };
           if(  strlen($_POST["cework_search"])>0){
-            $sql = $sql . "(expo_id IN (SELECT exposition FROM Oeuvre WHERE exposition LIKE :cework_search1 OR SIMILARITY(nom_expo,:cework_search2) > 0.4)) ";
+            if (strlen($sql) != 0) {
+              $sql = $sql . "AND ";
+            }
+            ;
+            $sql = $sql . "(expo_id IN (SELECT exposition FROM Oeuvre WHERE nom_oeuvre LIKE :cework_search1 OR SIMILARITY(nom_oeuvre,:cework_search2) > 0.4)) ";
           };
           if(  strlen($_POST["cemuseum_search"])>0){
+            if (strlen($sql) != 0) {
+              $sql = $sql . "AND ";
+            }
+            ;
             $sql = $sql . "(musee LIKE :cemuseum_search1 OR SIMILARITY(musee,:cemuseum_search2) > 0.4) ";
           };
           if(  strlen($_POST["cecountry_search"])>0){
-            $sql = $sql . "(musee LIKE :cecountry_search1 OR SIMILARITY(musee,:cecountry_search2) > 0.4) ";
+            if (strlen($sql) != 0) {
+              $sql = $sql . "AND ";
+            }
+            ;
+            $sql = $sql . "(pays LIKE :cecountry_search1 OR SIMILARITY(pays,:cecountry_search2) > 0.4) ";
           };
           if (strlen($sql) >0){
             $sql = "WHERE ".$sql;
@@ -85,14 +97,14 @@
           if(   strlen($_POST["cename_search"])>0){
             $cename_query = trim($_POST["cename_search"]);
             $cename_prepared = "%".$cename_query."%"; 
-            $stmt->bindParam(":aename_search1", $cename_prepared, PDO::PARAM_STR);
-            $stmt->bindParam(":aename_search2", $cename_query, PDO::PARAM_STR);
+            $stmt->bindParam(":cename_search1", $cename_prepared, PDO::PARAM_STR);
+            $stmt->bindParam(":cename_search2", $cename_query, PDO::PARAM_STR);
           };
           if(  strlen($_POST["cework_search"])>0){
             $cework_query = trim($_POST["cework_search"]);
-            $cwork_prepared = "%".$cework_query."%"; 
-            $stmt->bindParam(":aework_search1", $cework_prepared, PDO::PARAM_STR);
-            $stmt->bindParam(":aework_search2", $cework_query, PDO::PARAM_STR);
+            $cework_prepared = "%".$cework_query."%"; 
+            $stmt->bindParam(":cework_search1", $cework_prepared, PDO::PARAM_STR);
+            $stmt->bindParam(":cework_search2", $cework_query, PDO::PARAM_STR);
           };
           if(  strlen($_POST["cemuseum_search"])>0){
             $cemuseum_query = trim($_POST["cemuseum_search"]);

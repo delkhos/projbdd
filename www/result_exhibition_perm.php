@@ -69,11 +69,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     ;
     if (strlen($_POST["pework_search"]) > 0) {
-        $sql = $sql . "(expo_id IN (SELECT exposition FROM Oeuvre WHERE exposition LIKE :pework_search1 OR SIMILARITY(nom_expo,:pework_search2) > 0.4)) ";
+      if (strlen($sql) != 0) {
+            $sql = $sql . "AND ";
+        }
+        ;
+
+      $sql = $sql . "(expo_id IN (SELECT exposition FROM Oeuvre WHERE nom_oeuvre LIKE :pework_search1 OR SIMILARITY(nom_oeuvre,:pework_search2) > 0.4)) ";
     }
     ;
     if (strlen($_POST["pemuseum_search"]) > 0) {
-        $sql = $sql . "(musee LIKE :pemuseum_search1 OR SIMILARITY(musee,:pemuseum_search2) > 0.4) ";
+      if (strlen($sql) != 0) {
+            $sql = $sql . "AND ";
+        }
+        ;
+
+      $sql = $sql . "(musee LIKE :pemuseum_search1 OR SIMILARITY(musee,:pemuseum_search2) > 0.4) ";
     }
     ;
     
@@ -100,7 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     ;
     if (strlen($_POST["pemuseum_search"]) > 0) {
         $pemuseum_query    = trim($_POST["pemuseum_search"]);
-        $pemuseum_prepared = "%" . $peuseum_query . "%";
+        $pemuseum_prepared = "%" . $pemuseum_query . "%";
         $stmt->bindParam(":pemuseum_search1", $pemuseum_prepared, PDO::PARAM_STR);
         $stmt->bindParam(":pemuseum_search2", $pemuseum_query, PDO::PARAM_STR);
     }

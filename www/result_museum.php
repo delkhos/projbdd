@@ -84,7 +84,7 @@
               if (strlen($sql)!=0){
                 $sql = $sql."AND ";
               };   
-              $sql = $sql . "(pays LIKE :mcountry_search1 OR SIMILARITY(pays,:mcoutry_search2) > 0.4) ";
+              $sql = $sql . "(pays LIKE :mcountry_search1 OR SIMILARITY(pays,:mcountry_search2) > 0.4) ";
           
             }; 
           
@@ -96,7 +96,7 @@
             if( strlen($_POST["mname_search"])>0){
               $mname_query = trim($_POST["mname_search"]);
               $mname_prepared = "%".$mname_query."%"; 
-              $stm->bindParam(":mname_search1", $mname_prepared, PDO::PARAM_STR);
+              $stmt->bindParam(":mname_search1", $mname_prepared, PDO::PARAM_STR);
               $stmt->bindParam(":mname_search2", $mname_query, PDO::PARAM_STR);
             };
           
@@ -145,4 +145,3 @@
   </body>
 </html>
 
-t

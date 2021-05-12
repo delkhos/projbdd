@@ -81,20 +81,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql = $sql . "( nom_artiste IN (SELECT artiste FROM participation_courant WHERE nom_courant LIKE :amovement_search1 OR SIMILARITY(nom_courant,:amovement_search2) > 0.4)) ";
     }
     ;
-    if (strlen($_POST["adate_search"]) > 0) {
-        if (strlen($sql) != 0) {
-            $sql = $sql . "AND ";
-        }
-        ;
-        $sql = $sql . "(:adate_search2 BETWEEN date_naissance ANd date_mort) ";
-    }
-    ;
     if (strlen($_POST["acountry_search"]) > 0) {
         if (strlen($sql) != 0) {
             $sql = $sql . "AND ";
         }
         ;
-        $sql = $sql . "(pays LIKE :acountry_search2) ";
+        $sql = $sql . "(nationalite LIKE :acountry_search2) ";
     }
     ;
     
@@ -119,15 +111,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bindParam(":amovement_search2", $amovement_query, PDO::PARAM_STR);
     }
     ;
-    if (strlen($_POST["adate_search"]) > 0) {
-        $adate_query    = trim($_POST["adate_search"]);
-        $adate_prepared = intval($adate_query);
-        $stmt->bindParam(":adate_search2", $adate_prepared, PDO::PARAM_STR);
-    }
-    ;
     if (strlen($_POST["acountry_search"]) > 0) {
-        $adate_query    = trim($_POST["adate_search"]);
-        $adate_prepared = "%" . $adate_query . "%";
+        $acountry_query    = trim($_POST["acountry_search"]);
+        $acountry_prepared = "%" . $acountry_query . "%";
         $stmt->bindParam(":acountry_search2", $acountry_prepared, PDO::PARAM_STR);
     }
     ;

@@ -68,13 +68,25 @@
             $sql = $sql . "(nom_expo LIKE :aename_search1 OR SIMILARITY(nom_expo,:aename_search2) > 0.4) ";
           };
           if(  strlen($_POST["aework_search"])>0){
-            $sql = $sql . "(expo_id IN (SELECT exposition FROM Oeuvre WHERE exposition LIKE :aework_search1 OR SIMILARITY(nom_expo,:aework_search2) > 0.4)) ";
+            if (strlen($sql) != 0) {
+              $sql = $sql . "AND ";
+            }
+            ;
+            $sql = $sql . "(expo_id IN (SELECT exposition FROM Oeuvre WHERE nom_oeuvre LIKE :aework_search1 OR SIMILARITY(nom_oeuvre,:aework_search2) > 0.4)) ";
           };
           if(  strlen($_POST["aemuseum_search"])>0){
+            if (strlen($sql) != 0) {
+              $sql = $sql . "AND ";
+            }
+            ;
             $sql = $sql . "(musee LIKE :aemuseum_search1 OR SIMILARITY(musee,:aemuseum_search2) > 0.4) ";
           };
           if(  strlen($_POST["aeartist_search"])>0){
-            $sql = $sql . "(musee LIKE :aeartist_search1 OR SIMILARITY(musee,:aeartist_search2) > 0.4) ";
+            if (strlen($sql) != 0) {
+              $sql = $sql . "AND ";
+            }
+            ;
+            $sql = $sql . "(artiste LIKE :aeartist_search1 OR SIMILARITY(artiste,:aeartist_search2) > 0.4) ";
           };
           if (strlen($sql) >0){
             $sql = "WHERE ".$sql;

@@ -116,7 +116,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 <input type="reset" class="btn btn-secondary ml-2" value="Reset">
             </div>
         </form>
-    </div>
-  </p>
-</body>
+      </div>
+    </p>
+  </body>
 </html>

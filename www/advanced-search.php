@@ -79,8 +79,6 @@ echo htmlspecialchars($_SESSION["username"]);
             <input class="form-control mr-sm-2" name="wartist_search" type="search" placeholder="artist" aria-label="Search">
             <p>   artistic movement: </p>
             <input class="form-control mr-sm-2" name="wmovement_search" type="search" placeholder="movement" aria-label="Search">
-            <p>   date:  </p>
-            <input class="form-control mr-sm-2" name="wdate_search" type="search" placeholder="date" aria-label="Search">
             <p>   museum:  </p> 
             <input class="form-control mr-sm-2" name="wmuseum_search" type="search" placeholder="museum" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
@@ -93,8 +91,6 @@ echo htmlspecialchars($_SESSION["username"]);
             <input class="form-control mr-sm-2" name="aname_search" type="search" placeholder="name" aria-label="Search">
             <p>   artistic movement:  </p>
             <input class="form-control mr-sm-2" name="amovement_search" type="search" placeholder="movement" aria-label="Search">
-            <p>   date:  </p>
-            <input class="form-control mr-sm-2" name="adate_search" type="search" placeholder="date" aria-label="Search">
             <p>   country:  </p>
             <input class="form-control mr-sm-2" name="acountry_search" type="search" placeholder="country" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
@@ -108,8 +104,8 @@ echo htmlspecialchars($_SESSION["username"]);
             <input class="form-control mr-sm-2" name="mwork_search" type="search" placeholder="work" aria-label="Search">
             <p>   adress:  </p>
             <input class="form-control mr-sm-2" name="madress_search" type="search" placeholder="adress" aria-label="Search">
-            <p>   contry:  </p>
-            <input class="form-control mr-sm-2" name="mcountry_search" type="search" placeholder="date" aria-label="Search">
+            <p>   country:  </p>
+            <input class="form-control mr-sm-2" name="mcountry_search" type="search" placeholder="country" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
           </form>
         </div>
