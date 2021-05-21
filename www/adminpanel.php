@@ -17,7 +17,7 @@ $username_err = $museum_err = $museum_create_err = "";
 $username_success = $museum_success = $museum_create_success = "";
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-    if($_POST["submit1"]){
+    if( isset($_POST["submit1"])  && $_POST["submit1"]){
       if(empty(trim($_POST["username"]))){
           $username_err = "Please enter a username.";
       } else{
